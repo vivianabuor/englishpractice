@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>English Practice</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --border2: #363636;
+    --text: #f0ede8;
+    --text2: #888880;
+    --text3: #555550;
+    --accent: #c8f060;
+    --accent2: #a8d040;
+    --accent-dim: rgba(200,240,96,0.12);
+    --accent-dim2: rgba(200,240,96,0.06);
+    --red: #ff5e5e;
+    --amber: #ffb347;
+    --blue: #6eb5ff;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 0 0 6rem;
+  }
+
+  /* ── Header ── */
+  .header {
+    padding: 1.5rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+  }
+
+  .logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .session-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  /* ── Setup panel ── */
+  #setup-panel {
+    padding: 1.5rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .setup-title {
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .setup-title em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 300;
+  }
+
+  .setup-sub {
+    font-size: 14px;
+    color: var(--text2);
+    font-weight: 300;
+  }
+
+  .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .scenario-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+  }
+
+  .scenario-btn .emoji {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 6px;
+    line-height: 1;
+  }
+
+  .scenario-btn:hover, .scenario-btn.active {
+    border-color: var(--accent);
+    color: var(--text);
+    background: var(--accent-dim);
+  }
+
+  .scenario-btn.active {
+    background: var(--accent-dim2);
+  }
+
+  /* API key input */
+  .api-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .api-input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s;
+    letter-spacing: 0.04em;
+  }
+
+  .api-input::placeholder { color: var(--text3); }
+  .api-input:focus { border-color: var(--accent); }
+
+  .api-hint {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .api-hint a { color: var(--blue); text-decoration: none; }
+
+  .start-btn {
+    background: var(--accent);
+    color: #0d0d0d;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 14px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    width: 100%;
+    letter-spacing: -0.01em;
+  }
+
+  .start-btn:hover { background: var(--accent2); transform: translateY(-1px); }
+  .start-btn:active { transform: translateY(0); }
+  .start-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* ── Chat panel ── */
+  #chat-panel { display: none; flex-direction: column; flex: 1; }
+
+  .scenario-tag {
+    margin: 1rem 1.25rem 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 12px;
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    width: fit-content;
+  }
+
+  /* Messages */
+  .messages {
+    flex: 1;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+  }
+
+  .msg {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    animation: fadeUp 0.25s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .msg-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 0 4px;
+  }
+
+  .msg.user .msg-role { color: var(--accent); }
+
+  .msg-bubble {
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .msg.user .msg-bubble {
+    background: var(--accent-dim);
+    border: 1px solid rgba(200,240,96,0.2);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+  }
+
+  .msg.assistant .msg-bubble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  /* Feedback block */
+  .feedback-block {
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border2);
+    font-size: 13px;
+  }
+
+  .feedback-header {
+    background: var(--surface2);
+    padding: 8px 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .feedback-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+
+  .dot-green { background: var(--accent); }
+  .dot-amber { background: var(--amber); }
+  .dot-red { background: var(--red); }
+
+  .feedback-body {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--surface);
+  }
+
+  .feedback-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .feedback-icon {
+    font-size: 14px;
+    line-height: 1.5;
+    flex-shrink: 0;
+  }
+
+  .feedback-text { color: var(--text2); line-height: 1.5; }
+  .feedback-text strong { color: var(--text); font-weight: 500; }
+  .highlight-error { color: var(--red); font-family: 'DM Mono', monospace; }
+  .highlight-correct { color: var(--accent); font-family: 'DM Mono', monospace; }
+
+  /* Typing indicator */
+  .typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    width: fit-content;
+  }
+
+  .dot-pulse {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--text3);
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  .dot-pulse:nth-child(2) { animation-delay: 0.2s; }
+  .dot-pulse:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes pulse {
+    0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+    30% { opacity: 1; transform: scale(1); }
+  }
+
+  /* ── Controls bar ── */
+  .controls {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 560px;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 1rem 1.25rem 1.25rem;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 20;
+  }
+
+  .controls.visible { display: flex; }
+
+  .record-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .record-btn {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 14px 20px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .record-btn:hover { border-color: var(--border2); background: var(--surface2); }
+
+  .record-btn.recording {
+    background: rgba(255,94,94,0.12);
+    border-color: var(--red);
+    color: var(--red);
+    animation: recordPulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes recordPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,94,94,0.2); }
+    50% { box-shadow: 0 0 0 8px rgba(255,94,94,0); }
+  }
+
+  .record-icon {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--text2);
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+
+  .record-btn.recording .record-icon { background: var(--red); }
+
+  .tts-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    color: var(--text2);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    line-height: 1;
+  }
+
+  .tts-btn:hover { border-color: var(--blue); color: var(--blue); }
+  .tts-btn.speaking { border-color: var(--blue); color: var(--blue); }
+
+  .transcript-preview {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text3);
+    min-height: 18px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .transcript-preview.active { color: var(--text2); }
+
+  /* Error toast */
+  .toast {
+    position: fixed;
+    top: 70px; left: 50%;
+    transform: translateX(-50%);
+    background: #331010;
+    border: 1px solid var(--red);
+    color: var(--red);
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    z-index: 100;
+    max-width: 90vw;
+    text-align: center;
+    display: none;
+    animation: fadeUp 0.2s ease;
+  }
+
+  /* End session */
+  .end-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.15s;
+  }
+
+  .end-btn:hover { border-color: var(--red); color: var(--red); }
+
+  /* Summary panel */
+  #summary-panel {
+    display: none;
+    padding: 1.5rem 1.25rem;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .summary-title {
+    font-size: 20px;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .summary-title em { font-style: italic; color: var(--accent); }
+
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .summary-card-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+
+  .summary-card-value {
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--accent);
+    letter-spacing: -0.03em;
+  }
+
+  .restart-btn {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .restart-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  @media (max-width: 400px) {
+    .scenario-grid { grid-template-columns: 1fr; }
+    body { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="logo">EN//Practice</span>
+  <span class="session-badge" id="session-counter">0 turns</span>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Setup -->
+<div id="setup-panel">
+  <div>
+    <p class="setup-title">Speak <em>freely.</em><br>Get real feedback.</p>
+    <p class="setup-sub" style="margin-top:8px;">Conversación + corrección de pronunciación para nivel C1</p>
+  </div>
+
+  <div>
+    <p class="label">Scenario</p>
+    <div class="scenario-grid">
+      <button class="scenario-btn active" data-scenario="freeConversation" onclick="selectScenario(this)">
+        <span class="emoji">💬</span>Free conversation
+      </button>
+      <button class="scenario-btn" data-scenario="jobInterview" onclick="selectScenario(this)">
+        <span class="emoji">💼</span>Job interview
+      </button>
+      <button class="scenario-btn" data-scenario="debate" onclick="selectScenario(this)">
+        <span class="emoji">🎯</span>Debate / opinion
+      </button>
+      <button class="scenario-btn" data-scenario="dailyLife" onclick="selectScenario(this)">
+        <span class="emoji">☕</span>Daily life & travel
+      </button>
+    </div>
+  </div>
+
+  <div class="api-row">
+    <p class="label">Anthropic API key</p>
+    <input class="api-input" type="password" id="api-key-input"
+      placeholder="sk-ant-api03-..." autocomplete="off" autocorrect="off" spellcheck="false" />
+    <p class="api-hint">
+      Get one at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys.
+      Tu clave se guarda solo en este dispositivo.
+    </p>
+  </div>
+
+  <button class="start-btn" id="start-btn" onclick="startSession()">Start session →</button>
+</div>
+
+<!-- Chat -->
+<div id="chat-panel">
+  <div style="padding: 1rem 1.25rem 0; display:flex; align-items:center; justify-content:space-between;">
+    <span class="scenario-tag" id="scenario-tag">💬 Free conversation</span>
+    <button class="end-btn" onclick="endSession()">End session</button>
+  </div>
+  <div class="messages" id="messages"></div>
+</div>
+
+<!-- Summary -->
+<div id="summary-panel">
+  <p class="summary-title">Session <em>complete.</em></p>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+    <div class="summary-card">
+      <span class="summary-card-label">Turns</span>
+      <span class="summary-card-value" id="summary-turns">0</span>
+    </div>
+    <div class="summary-card">
+      <span class="summary-card-label">Errors found</span>
+      <span class="summary-card-value" id="summary-errors">0</span>
+    </div>
+  </div>
+  <div class="summary-card" id="summary-feedback-container">
+    <span class="summary-card-label">Common patterns to work on</span>
+    <div id="summary-feedback" style="color:var(--text2); font-size:14px; margin-top:6px;"></div>
+  </div>
+  <button class="restart-btn" onclick="restart()">← Start new session</button>
+</div>
+
+<!-- Controls -->
+<div class="controls" id="controls">
+  <div class="record-row">
+    <button class="record-btn" id="record-btn" ontouchstart="handleRecordTouch(event)" onclick="toggleRecording()">
+      <span class="record-icon"></span>
+      <span id="record-label">Hold to speak</span>
+    </button>
+    <button class="tts-btn" id="tts-btn" onclick="speakLast()" title="Listen to last response">🔊</button>
+  </div>
+  <div class="transcript-preview" id="transcript-preview">Tap the button and speak in English</div>
+</div>
+
+<script>
+// ── State ──
+let apiKey = '';
+let scenario = 'freeConversation';
+let history = [];
+let recognition = null;
+let isRecording = false;
+let lastAssistantText = '';
+let turnCount = 0;
+let errorCount = 0;
+let ttsUtterance = null;
+let isSpeaking = false;
+
+const SCENARIOS = {
+  freeConversation: {
+    emoji: '💬',
+    label: 'Free conversation',
+    prompt: `You are an English conversation partner for a Spanish-speaking Colombian student at C1 level. Your goal is to have natural, engaging conversations while providing pronunciation and fluency feedback.
+
+After each of the user's messages:
+1. Respond naturally to continue the conversation (1-3 sentences, keep it flowing)
+2. Then provide a FEEDBACK block in this exact format:
+
+---FEEDBACK---
+PRONUNCIATION: [specific sounds to work on, e.g. 'The word "world" — remember the /ɜːr/ sound, not "worlt"'] OR "Good!" if no issues
+FLUENCY: [one brief note on phrasing, word choice, or naturalness] OR "Natural!" if fine
+TIP: [one actionable tip for this specific error, or a useful expression they could use]
+---END---
+
+Focus on errors common for Spanish speakers: TH sounds, final consonants, vowel length, stress patterns, false cognates. Be encouraging but honest. Keep feedback concise.`
+  },
+  jobInterview: {
+    emoji: '💼',
+    label: 'Job interview',
+    prompt: `You are an English job interview coach for a Spanish-speaking Colombian professional at C1 level. Simulate a professional interview — ask one question at a time, respond to their answer, then give feedback.
+
+Start with: "Great, let's begin. Tell me a little about yourself and your professional background."
+
+After each response, continue the interview naturally, then add:
+
+---FEEDBACK---
+PRONUNCIATION: [specific issue or "Clear!"]
+FLUENCY: [professional register feedback — word choice, structure, filler words]
+TIP: [better phrasing for professional English or pronunciation fix]
+---END---
+
+Cover: behavioral questions, strengths/weaknesses, situational scenarios. Keep it realistic.`
+  },
+  debate: {
+    emoji: '🎯',
+    label: 'Debate / opinion',
+    prompt: `You are an English debate partner for a Spanish-speaking Colombian student at C1 level. Present a topic, listen to their argument, respectfully challenge it, and give feedback.
+
+Start with: "Let's debate. Here's the topic: Should social media platforms be regulated by governments? Give me your opening position."
+
+After each turn:
+
+---FEEDBACK---
+PRONUNCIATION: [specific sounds or "Clear!"]
+FLUENCY: [academic register, argumentation language, linking words used]  
+TIP: [useful debate phrases or pronunciation fix, e.g. 'Try: "I'd argue that..." instead of "I think that..."']
+---END---
+
+Push their reasoning while being respectful. Focus on academic and persuasive English.`
+  },
+  dailyLife: {
+    emoji: '☕',
+    label: 'Daily life & travel',
+    prompt: `You are a friendly English conversation partner helping a Spanish-speaking Colombian C1 student with everyday English and travel situations.
+
+Simulate real-life scenarios: ordering at a café, asking for directions, making small talk, planning a trip, dealing with a hotel. Start with: "Hey! Let's practice some everyday English. Imagine you've just arrived at a coffee shop in London. What would you say to the barista?"
+
+After each turn:
+
+---FEEDBACK---
+PRONUNCIATION: [specific everyday words they mispronounced or "Sounds great!"]
+FLUENCY: [natural informal register, contractions, idiomatic phrases]
+TIP: [useful idiom, phrasal verb, or pronunciation tip]
+---END---
+
+Keep the tone casual and fun. Teach natural spoken English, not textbook English.`
+  }
+};
+
+// ── Setup ──
+function selectScenario(btn) {
+  document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  scenario = btn.dataset.scenario;
+}
+
+function startSession() {
+  const key = document.getElementById('api-key-input').value.trim();
+  if (!key || !key.startsWith('sk-ant')) {
+    showToast('Please enter a valid API key (starts with sk-ant-)');
+    return;
+  }
+  apiKey = key;
+  localStorage.setItem('ep_api_key', key);
+
+  const s = SCENARIOS[scenario];
+  document.getElementById('scenario-tag').textContent = s.emoji + ' ' + s.label;
+
+  document.getElementById('setup-panel').style.display = 'none';
+  document.getElementById('chat-panel').style.display = 'flex';
+  document.getElementById('controls').classList.add('visible');
+
+  setupSpeechRecognition();
+  sendFirstMessage();
+}
+
+// ── Load saved key ──
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('ep_api_key');
+  if (saved) document.getElementById('api-key-input').value = saved;
+});
+
+// ── First message ──
+async function sendFirstMessage() {
+  addMessage('assistant', null, true);
+  const s = SCENARIOS[scenario];
+  const reply = await callClaude([{ role: 'user', content: 'Hello, I am ready to practice.' }], s.prompt);
+  removeTyping();
+  const { conversation, feedback } = parseReply(reply);
+  lastAssistantText = conversation;
+  addMessage('assistant', conversation, false, feedback);
+  history.push({ role: 'user', content: 'Hello, I am ready to practice.' });
+  history.push({ role: 'assistant', content: reply });
+}
+
+// ── Speech recognition ──
+function setupSpeechRecognition() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    showToast('Speech recognition not supported. Try Chrome or Safari.');
+    return;
+  }
+  recognition = new SpeechRecognition();
+  recognition.lang = 'en-US';
+  recognition.continuous = false;
+  recognition.interimResults = true;
+
+  recognition.onresult = (e) => {
+    const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+    const preview = document.getElementById('transcript-preview');
+    preview.textContent = transcript;
+    preview.classList.add('active');
+
+    if (e.results[e.results.length - 1].isFinal) {
+      stopRecording();
+      handleUserInput(transcript.trim());
+    }
+  };
+
+  recognition.onerror = (e) => {
+    stopRecording();
+    if (e.error !== 'no-speech') showToast('Mic error: ' + e.error);
+  };
+
+  recognition.onend = () => { if (isRecording) stopRecording(); };
+}
+
+function handleRecordTouch(e) {
+  e.preventDefault();
+}
+
+function toggleRecording() {
+  if (isRecording) { stopRecording(); return; }
+  if (!recognition) { showToast('Speech recognition not available'); return; }
+  startRecording();
+}
+
+function startRecording() {
+  isRecording = true;
+  const btn = document.getElementById('record-btn');
+  btn.classList.add('recording');
+  document.getElementById('record-label').textContent = 'Listening... tap to stop';
+  document.getElementById('transcript-preview').textContent = '';
+  document.getElementById('transcript-preview').classList.remove('active');
+  try { recognition.start(); } catch(e) {}
+}
+
+function stopRecording() {
+  isRecording = false;
+  const btn = document.getElementById('record-btn');
+  btn.classList.remove('recording');
+  document.getElementById('record-label').textContent = 'Hold to speak';
+  try { recognition.stop(); } catch(e) {}
+}
+
+async function handleUserInput(text) {
+  if (!text) return;
+  document.getElementById('transcript-preview').textContent = text;
+  addMessage('user', text);
+  history.push({ role: 'user', content: text });
+  turnCount++;
+  updateCounter();
+
+  addMessage('assistant', null, true);
+  const reply = await callClaude(history, SCENARIOS[scenario].prompt);
+  removeTyping();
+
+  const { conversation, feedback } = parseReply(reply);
+  lastAssistantText = conversation;
+  if (feedback && feedback.includes('PRONUNCIATION:') && !feedback.includes('Good!') && !feedback.includes('Clear!') && !feedback.includes('Sounds great!')) {
+    errorCount++;
+  }
+  addMessage('assistant', conversation, false, feedback);
+  history.push({ role: 'assistant', content: reply });
+  updateCounter();
+
+  scrollBottom();
+}
+
+// ── Claude API ──
+async function callClaude(messages, systemPrompt) {
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: messages
+      })
+    });
+    const data = await res.json();
+    if (data.error) { showToast('API error: ' + data.error.message); return ''; }
+    return data.content?.[0]?.text || '';
+  } catch(e) {
+    showToast('Connection error. Check your internet.');
+    return '';
+  }
+}
+
+// ── Parse reply ──
+function parseReply(text) {
+  const sep = text.indexOf('---FEEDBACK---');
+  if (sep === -1) return { conversation: text.trim(), feedback: null };
+  const conversation = text.slice(0, sep).trim();
+  const rest = text.slice(sep + 14);
+  const end = rest.indexOf('---END---');
+  const feedback = end !== -1 ? rest.slice(0, end).trim() : rest.trim();
+  return { conversation, feedback };
+}
+
+// ── Render messages ──
+function addMessage(role, text, isTyping = false, feedback = null) {
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  if (isTyping) div.id = 'typing-msg';
+
+  const roleLabel = document.createElement('div');
+  roleLabel.className = 'msg-role';
+  roleLabel.textContent = role === 'user' ? 'You' : 'Coach';
+  div.appendChild(roleLabel);
+
+  if (isTyping) {
+    const bubble = document.createElement('div');
+    bubble.className = 'typing-indicator';
+    bubble.innerHTML = '<div class="dot-pulse"></div><div class="dot-pulse"></div><div class="dot-pulse"></div>';
+    div.appendChild(bubble);
+  } else {
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+    bubble.textContent = text;
+    div.appendChild(bubble);
+
+    if (feedback) {
+      div.appendChild(renderFeedback(feedback));
+    }
+  }
+
+  msgs.appendChild(div);
+  scrollBottom();
+}
+
+function renderFeedback(raw) {
+  const block = document.createElement('div');
+  block.className = 'feedback-block';
+
+  const header = document.createElement('div');
+  header.className = 'feedback-header';
+  header.innerHTML = '<span class="feedback-dot dot-amber"></span> Pronunciation & fluency feedback';
+  block.appendChild(header);
+
+  const body = document.createElement('div');
+  body.className = 'feedback-body';
+
+  const lines = raw.split('\n').filter(l => l.trim());
+  lines.forEach(line => {
+    const item = document.createElement('div');
+    item.className = 'feedback-item';
+
+    let icon = '📋';
+    if (line.startsWith('PRONUNCIATION:')) icon = '🗣️';
+    else if (line.startsWith('FLUENCY:')) icon = '✍️';
+    else if (line.startsWith('TIP:')) icon = '💡';
+
+    const content = line.replace(/^(PRONUNCIATION|FLUENCY|TIP):/, m => `<strong>${m}</strong>`);
+
+    item.innerHTML = `<span class="feedback-icon">${icon}</span><span class="feedback-text">${content}</span>`;
+    body.appendChild(item);
+  });
+
+  block.appendChild(body);
+  return block;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-msg');
+  if (t) t.remove();
+}
+
+function scrollBottom() {
+  const msgs = document.getElementById('messages');
+  setTimeout(() => msgs.scrollTo({ top: msgs.scrollHeight, behavior: 'smooth' }), 50);
+}
+
+// ── TTS ──
+function speakLast() {
+  if (!lastAssistantText) return;
+  if (isSpeaking) { speechSynthesis.cancel(); isSpeaking = false; document.getElementById('tts-btn').classList.remove('speaking'); return; }
+
+  ttsUtterance = new SpeechSynthesisUtterance(lastAssistantText);
+  ttsUtterance.lang = 'en-US';
+  ttsUtterance.rate = 0.9;
+
+  const voices = speechSynthesis.getVoices();
+  const preferred = voices.find(v => v.lang === 'en-US' && v.name.includes('Samantha'))
+    || voices.find(v => v.lang === 'en-US');
+  if (preferred) ttsUtterance.voice = preferred;
+
+  ttsUtterance.onstart = () => { isSpeaking = true; document.getElementById('tts-btn').classList.add('speaking'); };
+  ttsUtterance.onend = () => { isSpeaking = false; document.getElementById('tts-btn').classList.remove('speaking'); };
+  speechSynthesis.speak(ttsUtterance);
+}
+
+// ── Session end ──
+async function endSession() {
+  document.getElementById('chat-panel').style.display = 'none';
+  document.getElementById('controls').classList.remove('visible');
+
+  document.getElementById('summary-turns').textContent = turnCount;
+  document.getElementById('summary-errors').textContent = errorCount;
+
+  // Ask Claude for a summary
+  const summaryPrompt = `Based on this English practice session, give a brief 2-3 sentence summary of the main pronunciation or fluency patterns to keep working on. Be specific and actionable. No intro phrase needed, go straight to the observations.`;
+  const summaryHistory = [...history, { role: 'user', content: summaryPrompt }];
+  const summaryReply = await callClaude(summaryHistory, SCENARIOS[scenario].prompt);
+  document.getElementById('summary-feedback').textContent = summaryReply || 'Great session! Keep practicing consistently.';
+
+  const panel = document.getElementById('summary-panel');
+  panel.style.display = 'flex';
+}
+
+function restart() {
+  history = [];
+  turnCount = 0;
+  errorCount = 0;
+  lastAssistantText = '';
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('summary-panel').style.display = 'none';
+  document.getElementById('session-counter').textContent = '0 turns';
+  document.getElementById('setup-panel').style.display = 'flex';
+}
+
+function updateCounter() {
+  document.getElementById('session-counter').textContent = turnCount + (turnCount === 1 ? ' turn' : ' turns');
+}
+
+// ── Toast ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 4000);
+}
+</script>
+</body>
+</html>
