@@ -588,11 +588,11 @@
   </div>
 
   <div class="api-row">
-    <p class="label">Anthropic API key</p>
+    <p class="label">Gemini API key</p>
     <input class="api-input" type="password" id="api-key-input"
-      placeholder="sk-ant-api03-..." autocomplete="off" autocorrect="off" spellcheck="false" />
+      placeholder="AIza..." autocomplete="off" autocorrect="off" spellcheck="false" />
     <p class="api-hint">
-      Get one at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys.
+      Gratis en <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a> → Create API key.
       Tu clave se guarda solo en este dispositivo.
     </p>
   </div>
@@ -734,8 +734,8 @@ function selectScenario(btn) {
 
 function startSession() {
   const key = document.getElementById('api-key-input').value.trim();
-  if (!key || !key.startsWith('sk-ant')) {
-    showToast('Please enter a valid API key (starts with sk-ant-)');
+  if (!key || !key.startsWith('AIza')) {
+    showToast('Please enter a valid Gemini API key (starts with AIza)');
     return;
   }
   apiKey = key;
@@ -855,27 +855,29 @@ async function handleUserInput(text) {
   scrollBottom();
 }
 
-// ── Claude API ──
+// ── Gemini API ──
 async function callClaude(messages, systemPrompt) {
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: systemPrompt,
-        messages: messages
-      })
-    });
+    const contents = messages.map(m => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: m.content }]
+    }));
+
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: systemPrompt }] },
+          contents: contents,
+          generationConfig: { maxOutputTokens: 1000, temperature: 0.8 }
+        })
+      }
+    );
     const data = await res.json();
     if (data.error) { showToast('API error: ' + data.error.message); return ''; }
-    return data.content?.[0]?.text || '';
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
   } catch(e) {
     showToast('Connection error. Check your internet.');
     return '';
